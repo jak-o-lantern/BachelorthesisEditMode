@@ -1,0 +1,2 @@
+# BachelorThesis
+A metagenomic workflow.
