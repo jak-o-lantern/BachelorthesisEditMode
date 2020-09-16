@@ -64,6 +64,72 @@ Various further needed programs require sorted and indexed bam files to work. So
 
 samtools view --threads num_threads -F 4 -bS PATH-TO-MAPPED-FILE/pyr_d60_all_reform_mapped.sam > OUTPUT-PATH/pyr_d60_all_reform_mapped_RAW.bam
 
-7.2 sorting and indexing the file (r_bam > .bam and .bam.bai)
+  7.2 sorting and indexing the file (r_bam > .bam and .bam.bai)
 Since anvi'o and samtools require different versions of Python, switch to the environment that has the right Python version (3.0 I think) installed (The installed version of Python can be checked with <i> "conda list" </i> or <i> "conda version python" </i> in the desired environment). 
+
+anvi-init-bam -T num_threads PATH-TO-MAPPED-RAW-BAM-FILE/pyr_d60_all_mapped_RAW.bam -o OUTPUT-PATH/pyr_d60_all_mapped.bam
+
+8. Binning 
+This step will sort the assembled and hopefully nice and long contigs into bins. This means it will group those contigs that belong to one organism or genome together, attempting to achieve the highest completion and lowest contamination per bin. Make sure to switch back to the right Python environment.
+
+8.1 Metabat2
+By running metabat with the bam file as reference the accuracy of binning is improved. (creates a new directory with default naming in the current directory)
+
+runMetaBat.sh PATH-TO-ASSEMBLED-CONTIGS/contigs.fasta PATH-TO-COMPLEMENTING-BAM-FILE/pyr_d60_all_ mapped.bam
+
+8.2 Maxbin2
+
+run_MaxBin.pl -contig PATH-TO-ASSEMBLED-CONTIGS/contigs.fasta -out OUTPUT-PATH/maxbin_pyr_d60_all -thread num_threads -reads PATH-TO-CLEAN-READS/pyr_d60_all_1_clean.fq -reads2 PATH-TO-CLEAN-READS/pyr_d60_all_1_clean.fq
+
+8.3 CONCOCT
+Running CONCOCT requires a few more steps than the other two binning programs. CONCOCT also requires Python 3.0(?), so make sure to switch environments again.
+
+8.3.1 Cutting the contigs into smaller pieces. The recommended cut length as specified <here> is 10000 bp. If necessary (i.e. in later stages of the bin targeted reassembly) cut length can be reduced as appropriate.
+  
+cut_up_fasta.py PATH-TO-ASSEMBLED-CONTIGS/contigs.fasta -c 10000 -o 0 --merge_last -b OUTPUT-PATH/contigs_10k.bed > OUTPUT-PATH/contigs_10k.fa
+
+8.3.2 Generating the coverage table.
+
+concoct_coverage_table.py PATH-TO-BED-FILE/contigs_10k.bed PATH-TO-MAPPED-SORTED-AND-INDEXED-CONTIGS/ pyr_d60_all_ mapped.bam > OUTPUT-PATH/coverage_table.tsv
+
+8.3.3 Binning. -b will create a new directory as output for concoct with the name you specify.
+
+concoct --composition_file PATH-TO-CUT-UP-CONTIGS/contigs_10k.fa --coverage_file PATH-TO-COVERAGE-TABLE/coverage_table.tsv -b PATH-TO-AND-NAME-FOR-OUTPUT-DIRECTORY/
+
+8.3.4 Merging the cut up contigs with the original contigs
+
+merge_cutup_clustering.py PATH-TO-CONCOCT-OUTPUT/clustering_gt1000.csv > OUTPUT-PATH/clustering_merged.csv
+
+8.3.5 Extracting the bins as FASTA files
+
+mkdir PATH-TO-CONCOCT-OUTPUT/fasta_bins
+extract_fasta_bins.py PATH-TO-ORIGINAL-CONTIGS/contigs.fasta PATH-TO-CONCOCT-OUTPUT/clustering_merged.csv --output_path PATH-TO-CONCOCT-OUTPUT/fasta_bins
+
+9. Bin refinement using METAWRAP
+METAWRAP takes the bins created by Metabat2, Maxbin2 and CONCOCT and bins them, again. It provides a combination of all three binning approaches to create 4 new sets of bins. The combinations are AB, ABC, AC and BC. This optimises the binning. Remember to document which binning program is used as which input (A=Metabat, …). -c enables to set a threshold for completeness and -x a threshold for contamination. The default is fairly conservative with -c 70 and -x 10, which can be a good approach for the first rebinning, but should be increased in later iterations. -o creates a new directory to be used as output for the refinement using the name you specify.
+
+metawrap bin_refinement -o PATH-TO-METAWRAP-OUTPUT/Bin_Refinement -t num_threads -A PATH-TO-METABAT2-BINS/fasta_bins/ -B PATH-TO-MAXBIN-BINS/fasta_bins/ -C PATH-TO-CONCOCT-BINS/fasta_bins/ -c 90 -x 5  
+
+10. Classification of assembled reads
+To begin the bin targeted reassembly, it is necessary to know which bin contains contigs for which organism/gene/genome. Therefore, classification needs to be run on the created bins. Here, classification using the GTDB is conducted utilising GTDBtk. Note that using this database means that the GTDB names will be used and might therefore differ from the NCBI database organism names (i.e. Sva1033 (NCBI) = BM103 (GTDB)). -x sets the file format. If the contigs are .fa format change to -x fa.
+
+gtdbtk classify_wf --genome_dir PATH-TO-REFINED-BINS/binsAB/ --out_dir OUTPUT-PATH/classified_pyr_d60_AB --cpus num_threads --extension fasta
+gtdbtk classify_wf --genome_dir PATH-TO-REFINED-BINS/binsABC/ --out_dir OUTPUT-PATH/classified_py_d60_ABC --cpus num_threads --extension fasta
+…
+
+11. Analysing statistics for the created bins using CheckM
+To know how complete and contaminated a bin is, CheckM is run. Bins with a completion below 70% and a contamination above 10% should be disregarded or refined. The higher the completeness and the lower the contamination the better the bin. This will not display the GTDB names but just the bin numbers. Check back with your GTDBtk file to know which bin is which.
+
+  11.1 Lineage_wf
+-x defines the input format (set -x fasta if bins are in .fasta), --tab_table is optional. If not set CheckM will just give out the results in the console, setting the flag will print out a file named as in -f in the set output directory.
+
+checkm lineage_wf PATH-TO-FASTA-BINS/fasta_bins/ BachelorAnna/checkm/concoct/ -x fa -t 4 --tab_table -f checkm_out
+
+  11.2 CheckM QA
+This step gives out the file (if flag --tab_table is set) that has the statisctical analysis of all bins located in the specified input folder (completeness, contamination, N50 value, ...)
+
+checkm qa -o 2 -f checkm_qa_out --tab_table -t 4 PATH-TO-CHECKM-OUTPUT/lineage.ms output_folder/
+
+12. Bin targeted reassembly
+
 
