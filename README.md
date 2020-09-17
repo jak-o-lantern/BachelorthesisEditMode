@@ -1,11 +1,11 @@
 # BachelorThesis
-A metagenomic workflow.
+<title> A metagenomic workflow. </title>
 
 For this documentation the pyr_d60 samples are used as examples for easier understanding of the command lines.
 
 <center> Starting the pipeline: </center>
 
-<center> 1. Quality check with FastQC </center>
+<h2> <center> 1. Quality check with FastQC </center> </h2> <br>
 Using the Illumina Sequences obtained from environmental samples a quality check with FastQC is to be conducted. This analysis will show where the sequences need to be refined, such as trimming out adapters and potentially contaminated parts (mostly located at the beginning and end of the sequences). 
 
 <code> fastqc -o OUTPUT_PATH -f fastq PATH-TO-RAW-READS/pyr_d60_all_1.fq PATH-TO-RAW-READS/pyr_d60_all_2.fq -t num_threads </code>
