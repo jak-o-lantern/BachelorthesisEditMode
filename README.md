@@ -1,27 +1,26 @@
-# BachelorThesis
-<title> A metagenomic workflow. </title>
+# A metagenomic workflow.
 
 For this documentation the pyr_d60 samples are used as examples for easier understanding of the command lines.
 
 <center> Starting the pipeline: </center>
 
-<h2> <center> 1. Quality check with FastQC </center> </h2> <br>
+<h3> <center> 1. Quality check with FastQC </center> </h3> 
 Using the Illumina Sequences obtained from environmental samples a quality check with FastQC is to be conducted. This analysis will show where the sequences need to be refined, such as trimming out adapters and potentially contaminated parts (mostly located at the beginning and end of the sequences). 
 
 <code> fastqc -o OUTPUT_PATH -f fastq PATH-TO-RAW-READS/pyr_d60_all_1.fq PATH-TO-RAW-READS/pyr_d60_all_2.fq -t num_threads </code>
 
-<center> 2. Trimming with BBDuk </center>
+<h3> <center> 2. Trimming with BBDuk </center> </h3> <br>
 After analysing the reads with FastQC, determine where trimming is necessary. Trimming is performed in 3 steps: Adapter trimming left, adapter trimming right and quality trimming. Make sure to always update the input file with the most recent file (i.e. using the righttrimmed file to perform the adapter trim on the left side of the sequence and then the rl trimmed file to perform the quality trim on).
 
-<center> 2.1 Right trim: </center>
+<h3> <center> 2.1 Right trim: </center> </h3>
 
 <code> bbduk.sh t=num_threads in1=PATH-TO-RAW-READS/pyr_d60_all_1.fq in2=PATH-TO-RAW-READS/pyr_d60_all_2.fq out1=OUTPUT-PATH/pyr_d60_all_1_rtrim.fq out2=OUTPUT-PATH/pyr_d60_all_2_rtrim.fq ref=PATH-TO-ADAPTER-FILE/adapters.fa ktrim=r k=23 mink=11 hdist=1 tpe tbo  </code>
 
-<center> 2.2 Left trim: </center>
+<h3> <center> 2.2 Left trim: </center> </h3>
 
 <code> bbduk.sh t=num_threads in1=PATH-TO-RIGHT-TRIMMED-FILE/pyr_d60_all_1_rtrim.fq in2=PATH-TO-RIGHTTRIMMED-FILE/pyr_d60_all_2_rtrim.fq out1=OUTPUT-PATH/pyr_d60_all_1_rltrimmed.fq out2=OUTPUT-PATH/pyr_d60_all_2_rltrimmed.fq ref=PATH-TO-ADAPTER-FILE/adapters.fa ktrim=l k=23 mink=11 hdist=1 tpe tbo </code>  
 
-<center> 2.3 Quality trim: </center>
+<h3> <center> 2.3 Quality trim: </center> </h3>
 The parameters ftl, ftr, trimq, maq and minlen have to be set according to the FastQC results.
 
 <code> bbduk.sh t=num_threads in1=PATH-TO-RL-TRIMMED-FILE/pyr_d60_all_1_clean.fq in2=PATH-TO-RL-TRIMMED-FILE/pyr_d60_all_2_clean.fq out1=OUTPUT-PATH-FOR-CLEAN-READS/pyr_d60_all_1_crisp.fq out2=OUTPUT-PATH-FOR-CLEAN-READS/pyr_d60_all_2_crisp.fq qtrim=rl trimq=20 ftl=6 ftr=144 maq=20 minlen=100 </code>
