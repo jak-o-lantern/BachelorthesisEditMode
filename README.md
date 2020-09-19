@@ -37,7 +37,7 @@ Kraken2 is the base for Bracken to run on. This takes a while, go read some nice
 <code> kraken2 --db PATH-TO-KRAKEN-DATABASE/kraken2_db --paired --classified-out pyr_d60#.fq PATH-TO-CLEAN-READS/pyr_d60_all_1_clean.fq PATH-TO-CLEAN-READS/pyr_d60_all_2_clean.fq --threads num_threads --output PATH-TO-KRAKEN-OUTPUT/pyr_d60_Kraken.out --report Pyr_d60.report --confidence 0.05 </code>
 
 <h3> <center> 4.2 Bracken </center> </h3>
-Now that the initial work is done (thx Kraken<3) the estimation can be conducted. Bracken will default to estimate organisms on species level. Make sure to set the level (-l) for each iteration (levels: D=domain, P=phylum, C=class, O=order, F=family, G=genus, S=species (default)). The parameter -r sets the readlength (use what you set as minlen in the quality trim).
+Now that the initial work is done (thx Kraken<3) the estimation can be conducted. Bracken will default to estimate organisms on species level. Make sure to set the level (-l) for each iteration (levels: D=domain, P=phylum, C=class, O=order, F=family, G=genus, S=species (default)). The parameter -r sets the readlength (use what you set as minlen in the quality trim). <br>
 
 <code> bracken -d PATH-TO-KRAKEN-DATABASE/kraken2_db -i PATH-TO-KRAKEN-REPORT-FILE/Pyr_d60_.report -o PATH-TO-BRACKEN-OUTPUT/Pyr_d60.bracken -r 100 -l D -t num_threads </code>
 <code> bracken -d PATH-TO-KRAKEN-DATABASE/kraken2_db -i PATH-TO-KRAKEN-REPORT-FILE/Pyr_d60_.report -o PATH-TO-BRACKEN-OUTPUT/Pyr_d60.bracken -r 100 -l P -t num_threads </code>
@@ -67,7 +67,7 @@ Various further needed programs require sorted and indexed bam files to work. So
 <code> samtools view --threads num_threads -F 4 -bS PATH-TO-MAPPED-FILE/pyr_d60_all_reform_mapped.sam > OUTPUT-PATH/pyr_d60_all_reform_mapped_RAW.bam </code>
 
 <h3> <center> 7.2 sorting and indexing the file (r_bam > .bam and .bam.bai) </center> </h3>
-Since anvi'o and samtools require different versions of Python, switch to the environment that has the right Python version (3.0 I think) installed (The installed version of Python can be checked with <code> "conda list" </code> or <code> "conda version python" </code> in the desired environment). 
+Since anvi'o and samtools require different versions of Python, switch to the environment that has the right Python version (3.0 I think) installed (The installed version of Python can be checked with <code> "conda list" </code> or <code> "conda version python" </code> in the desired environment). <br>
 
 <code> anvi-init-bam -T num_threads PATH-TO-MAPPED-RAW-BAM-FILE/pyr_d60_all_mapped_RAW.bam -o OUTPUT-PATH/pyr_d60_all_mapped.bam </code>
 
@@ -110,12 +110,12 @@ The recommended cut length as specified <here> is 10000 bp. If necessary (i.e. i
 <code> extract_fasta_bins.py PATH-TO-ORIGINAL-CONTIGS/contigs.fasta PATH-TO-CONCOCT-OUTPUT/clustering_merged.csv --output_path PATH-TO-CONCOCT-OUTPUT/fasta_bins </code>
 
 <h3> <center> 9. Bin refinement using METAWRAP </center> </h3>
-METAWRAP takes the bins created by Metabat2, Maxbin2 and CONCOCT and bins them, again. It provides a combination of all three binning approaches to create 4 new sets of bins. The combinations are AB, ABC, AC and BC. This optimises the binning. Remember to document which binning program is used as which input (A=Metabat, …). -c enables to set a threshold for completeness and -x a threshold for contamination. The default is fairly conservative with -c 70 and -x 10, which can be a good approach for the first rebinning, but should be increased in later iterations. -o creates a new directory to be used as output for the refinement using the name you specify.
+METAWRAP takes the bins created by Metabat2, Maxbin2 and CONCOCT and bins them, again. It provides a combination of all three binning approaches to create 4 new sets of bins. The combinations are AB, ABC, AC and BC. This optimises the binning. Remember to document which binning program is used as which input (A=Metabat, …). -c enables to set a threshold for completeness and -x a threshold for contamination. The default is fairly conservative with -c 70 and -x 10, which can be a good approach for the first rebinning, but should be increased in later iterations. -o creates a new directory to be used as output for the refinement using the name you specify. <br>
 
 <code> metawrap bin_refinement -o PATH-TO-METAWRAP-OUTPUT/Bin_Refinement -t num_threads -A PATH-TO-METABAT2-BINS/fasta_bins/ -B PATH-TO-MAXBIN-BINS/fasta_bins/ -C PATH-TO-CONCOCT-BINS/fasta_bins/ -c 90 -x 5  </code>
 
 <h3> <center> 10. Classification of assembled reads </center> </h3>
-To begin the bin targeted reassembly, it is necessary to know which bin contains contigs for which organism/gene/genome. Therefore, classification needs to be run on the created bins. Here, classification using the GTDB is conducted utilising GTDBtk. Note that using this database means that the GTDB names will be used and might therefore differ from the NCBI database organism names (i.e. Sva1033 (NCBI) = BM103 (GTDB)). -x sets the file format. If the contigs are .fa format change to -x fa.
+To begin the bin targeted reassembly, it is necessary to know which bin contains contigs for which organism/gene/genome. Therefore, classification needs to be run on the created bins. Here, classification using the GTDB is conducted utilising GTDBtk. Note that using this database means that the GTDB names will be used and might therefore differ from the NCBI database organism names (i.e. Sva1033 (NCBI) = BM103 (GTDB)). -x sets the file format. If the contigs are .fa format change to -x fa. <br>
 
 <code> gtdbtk classify_wf --genome_dir PATH-TO-REFINED-BINS/binsAB/ --out_dir OUTPUT-PATH/classified_pyr_d60_AB --cpus num_threads --extension fasta </code>
 <code> gtdbtk classify_wf --genome_dir PATH-TO-REFINED-BINS/binsABC/ --out_dir OUTPUT-PATH/classified_py_d60_ABC --cpus num_threads --extension fasta </code>
@@ -125,7 +125,7 @@ To begin the bin targeted reassembly, it is necessary to know which bin contains
 To know how complete and contaminated a bin is, CheckM is run. Bins with a completion below 70% and a contamination above 10% should be disregarded or refined. The higher the completeness and the lower the contamination the better the bin. This will not display the GTDB names but just the bin numbers. Check back with your GTDBtk file to know which bin is which.
 
 <h3> <center> 11.1 Lineage_wf </center> </h3>
--x defines the input format (set -x fasta if bins are in .fasta), --tab_table is optional. If not set CheckM will just give out the results in the console, setting the flag will print out a file named as in -f in the set output directory.
+-x defines the input format (set -x fasta if bins are in .fasta), --tab_table is optional. If not set CheckM will just give out the results in the console, setting the flag will print out a file named as in -f in the set output directory. <br>
 
 <code> checkm lineage_wf PATH-TO-FASTA-BINS/fasta_bins/ BachelorAnna/checkm/concoct/ -x fa -t 4 --tab_table -f checkm_out </code>
 
@@ -135,5 +135,50 @@ This step gives out the file (if flag --tab_table is set) that has the statiscti
 <code> checkm qa -o 2 -f checkm_qa_out --tab_table -t 4 PATH-TO-CHECKM-OUTPUT/lineage.ms output_folder/ </code>
 
 <h3> <center> 12. Bin targeted reassembly </center> </h3>
+After having checked the bins and selected the one(s) suitable for your cause, bin targeted reassembly starts. This process also has a couple steps necessary.
+
+<h3> <center> 12.1 remapping the clean reads to the selected bin using BBMap </center> </h3>
+The minimum identity was set to 0.98 for the first iteration of mapping, and increased to 0.99 for the following iterations. <br>
+
+<code> bbmap.sh in1=PATH-TO-CLEAN-READS/pyr_d60_all_1_clean.fq in2=PATH-TO-CLEAN-READS/pyr_d60_all_2_clean.fq minid=0.98 threads=num_threads outm=READ_98.sam ref=PATH-TO-BIN/BinX.fasta </code>
+
+<h3> <center> 12.2 .sam > unsorted and unindexed .bam </center> </h3> 
+<code> samtools view -S -b PATH-TO-MAPPED-FILE/READ_98.sam > OUTPUT-PATH/READ_98_r.bam </code>
+
+<h3> <center> 12.2 raw .bam > .bam </center> </h3> 
+Switch back to Anvi’o environment <br>
+
+<code> anvi-init-bam -T 8 PATH-TO-RAW-BAM/READ98_r.bam -o OUTPUT-PATH/READ98.bam </code>
+
+<h3> <center> 12.3 .bam > .fq </center> </h3>
+Changes the .bam format to fasta/fastq format <br>
+
+<code> samtools bam2fq PATH-TO-BAM-FILE/READ_98.bam > OUPUT-PATH/READ_98.fastq </code>
+
+<h3> <center> 12.4 divide into two fastq files </center> </h3> <br>
+
+<code> cat READ_98.fastq | grep '^@.*/1$' -A 3 --no-group-separator > READ_98_1.fastq </code> <br>
+<code> cat READ_98.fastq | grep '^@.*/2$' -A 3 --no-group-separator > READ_98_2.fastq </code>
+
+<h3> <center>  13. Reassembly with SPAdes </center> </h3> 
+Utilising metagenome and paired end flags --meta --pe <br>
+
+<code> spades.py -o OUTPUT-PATH/reassembly --pe1-1 PATH-TO-READ-1/READ_98_1.fastq --pe1-2 PATH-TO-READ-2/READ_98_2.fastq --meta -t num_threads </code> <br>
+Moving on, map the clean reads back to the contigs created in the new assembly. Repeat steps 12.1 through 12.4. 
+
+<font size=5> Steps 8 through 13 are repeated until the N50 value does no longer increase. </font>
+
+<h3> <center>  14. Extracting 16s RNA from bins using Barrnap </center> </h3> 
+Barrnap can identify bacterial, archeal and prokaryotic RNA, the default is bacterial. 
+
+<code> --kingdom bac --threads num_threads --outseq OUTPUT-PATH/BC_Bin24_RNA.fa < PATH-TO-DESIRED-BIN/Refined_24.fa </code>
+
+<h3> <center> 15. Annotating genes with RAST </center> </h3>
+Send the obtained sequence to RAST for annotation. Depending on their job load and your sample it might take a while. 
+
+
+
+
+
 
 
