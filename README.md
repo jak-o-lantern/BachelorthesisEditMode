@@ -39,7 +39,7 @@ Kraken2 is the base for Bracken to run on. This takes a while, go read some nice
 <h3> <center> 4.2 Bracken </center> </h3>
 Now that the initial work is done (thx Kraken<3) the estimation can be conducted. Bracken will default to estimate organisms on species level. Make sure to set the level (-l) for each iteration (levels: D=domain, P=phylum, C=class, O=order, F=family, G=genus, S=species (default)). The parameter -r sets the readlength (use what you set as minlen in the quality trim). <br>
 
-<code> bracken -d PATH-TO-KRAKEN-DATABASE/kraken2_db -i PATH-TO-KRAKEN-REPORT-FILE/Pyr_d60_.report -o PATH-TO-BRACKEN-OUTPUT/Pyr_d60.bracken -r 100 -l D -t num_threads </code>
+<code> bracken -d PATH-TO-KRAKEN-DATABASE/kraken2_db -i PATH-TO-KRAKEN-REPORT-FILE/Pyr_d60_.report -o PATH-TO-BRACKEN-OUTPUT/Pyr_d60.bracken -r 100 -l D -t num_threads </code> <p>
 <code> bracken -d PATH-TO-KRAKEN-DATABASE/kraken2_db -i PATH-TO-KRAKEN-REPORT-FILE/Pyr_d60_.report -o PATH-TO-BRACKEN-OUTPUT/Pyr_d60.bracken -r 100 -l P -t num_threads </code>
 ...
 
