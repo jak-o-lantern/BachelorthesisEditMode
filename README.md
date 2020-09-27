@@ -61,11 +61,11 @@ Now that the reads have been assembled they have to be mapped for quantification
 <h3> <center> 7. .sam > .bam </center> </h3>
 Various further needed programs require sorted and indexed bam files to work. Sorting and indexing can be done using only samtools (samtools view, samtools sort and samtools index) or using a combination of samtools and Anvi'o. Here, the combination method is used.
 
-<h3> <center> 7.1 creating the "raw" (not sorted or indexed) .bam file. </center> </h3>
+<h3> <center> 7.1 Creating the "raw" (not sorted or indexed) .bam file. </center> </h3>
 
 <code> samtools view --threads num_threads -F 4 -bS PATH-TO-MAPPED-FILE/pyr_d60_all_reform_mapped.sam > OUTPUT-PATH/pyr_d60_all_reform_mapped_RAW.bam </code>
 
-<h3> <center> 7.2 sorting and indexing the file (r_bam > .bam and .bam.bai) </center> </h3>
+<h3> <center> 7.2 Sorting and indexing the file (r_bam > .bam and .bam.bai) </center> </h3>
 Switch to correct python environment for Anvi'o. <p>
 
 <code> anvi-init-bam -T num_threads PATH-TO-MAPPED-RAW-BAM-FILE/pyr_d60_all_mapped_RAW.bam -o OUTPUT-PATH/pyr_d60_all_mapped.bam </code>
@@ -134,7 +134,7 @@ This step gives out the file (if flag --tab_table is set) that has the statiscti
 <code> checkm qa -o 2 -f checkm_qa_out --tab_table -t 4 PATH-TO-CHECKM-OUTPUT/lineage.ms output_folder/ </code>
 
 <h3> <center>  12. Extracting 16s RNA from bins using Barrnap </center> </h3> 
-Barrnap can identify bacterial, archeal and prokaryotic RNA, the default is bacterial. <p>
+Barrnap can identify bacterial, archeal and prokaryotic RNA, the default is bacterial. Using these 16s RNAs a phylogeny tree is later created with ARB. <p>
 
 <code> --kingdom bac --threads num_threads --outseq OUTPUT-PATH/BC_Bin24_RNA.fa < PATH-TO-DESIRED-BIN/Refined_24.fa </code>
 
