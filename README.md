@@ -7,7 +7,7 @@ For this documentation the pyr_d60 samples are used as examples for easier under
 <h3> <center> 1. Quality check with FastQC </center> </h3> 
 Using the Illumina Sequences obtained from environmental samples a quality check with FastQC is to be conducted. This analysis will show where the sequences need to be refined, such as trimming out adapters and potentially contaminated parts (mostly located at the beginning and end of the sequences). <p>
 
-<code> fastqc -o OUTPUT_PATH -f fastq PATH-TO-RAW-READS/pyr_d60_all_1.fq PATH-TO-RAW-READS/pyr_d60_all_2.fq -t num_threads </code>
+<code>fastqc -o OUTPUT_PATH -f fastq PATH-TO-RAW-READS/pyr_d60_all_1.fq PATH-TO-RAW-READS/pyr_d60_all_2.fq -t num_threads </code>
 
 <h3> <center> 2. Trimming with BBDuk </center> </h3> 
 After analysing the reads with FastQC, it was determined where trimming is necessary. Trimming is performed in 3 steps: Adapter trimming left, adapter trimming right and quality trimming. Always update the input file with the most recent file (i.e. using the right-trimmed file to perform the adapter trim on the left side of the sequence and then the rl-trimmed file to perform the quality trim on).
@@ -18,15 +18,14 @@ After analysing the reads with FastQC, it was determined where trimming is neces
 
 <h3> <center> 2.2 Left trim: </center> </h3>
 
-<code> bbduk.sh t=num_threads in1=PATH-TO-RIGHT-TRIMMED-FILE/pyr_d60_all_1_rtrim.fq in2=PATH-TO-RIGHTTRIMMED-FILE/pyr_d60_all_2_rtrim.fq out1=OUTPUT-PATH/pyr_d60_all_1_rltrimmed.fq out2=OUTPUT-PATH/pyr_d60_all_2_rltrimmed.fq ref=PATH-TO-ADAPTER-FILE/adapters.fa ktrim=l k=23 mink=11 hdist=1 tpe tbo </code>  
+<code>bbduk.sh t=num_threads in1=PATH-TO-RIGHT-TRIMMED-FILE/pyr_d60_all_1_rtrim.fq in2=PATH-TO-RIGHTTRIMMED-FILE/pyr_d60_all_2_rtrim.fq out1=OUTPUT-PATH/pyr_d60_all_1_rltrimmed.fq out2=OUTPUT-PATH/pyr_d60_all_2_rltrimmed.fq ref=PATH-TO-ADAPTER-FILE/adapters.fa ktrim=l k=23 mink=11 hdist=1 tpe tbo </code>  
 
 <h3> <center> 2.3 Quality trim: </center> </h3>
 The parameters ftl, ftr, trimq, maq and minlen have to be set according to the FastQC results. <p>
 
-<code> bbduk.sh t=num_threads in1=PATH-TO-RL-TRIMMED-FILE/pyr_d60_all_1_clean.fq in2=PATH-TO-RL-TRIMMED-FILE/pyr_d60_all_2_clean.fq out1=OUTPUT-PATH-FOR-CLEAN-READS/pyr_d60_all_1_crisp.fq out2=OUTPUT-PATH-FOR-CLEAN-READS/pyr_d60_all_2_crisp.fq qtrim=rl trimq=20 ftl=6 ftr=144 maq=20 minlen=100 </code>
+<code>bbduk.sh t=num_threads in1=PATH-TO-RL-TRIMMED-FILE/pyr_d60_all_1_clean.fq in2=PATH-TO-RL-TRIMMED-FILE/pyr_d60_all_2_clean.fq out1=OUTPUT-PATH-FOR-CLEAN-READS/pyr_d60_all_1_crisp.fq out2=OUTPUT-PATH-FOR-CLEAN-READS/pyr_d60_all_2_crisp.fq qtrim=rl trimq=20 ftl=6 ftr=144 maq=20 minlen=100 </code>
 
 <h3> <center> 3. Repeat quality check with FastQC </center> </h3>
-See above.
 
 <h3> <center> 4. Abundance Estimation with Kraken2 and Bracken </center> </h3>
 Abundance estimation gives a first overview of species identified in the sample. It is useful to check abundance before continuing the pipeline in case the target organism is not very abundant. When installing the packages for Kraken2 and Bracken check the packages in the environment using conda list (if using anaconda). Bracken can install kraken1 which will cause problems. If listed, remove before continuing. 
@@ -34,7 +33,7 @@ Abundance estimation gives a first overview of species identified in the sample.
 <h3> <center> 4.1 Kraken2 </center> </h3>
 Kraken2 is the base for Bracken to run on. <p>
 
-<code> kraken2 --db PATH-TO-KRAKEN-DATABASE/kraken2_db --paired --classified-out pyr_d60#.fq PATH-TO-CLEAN-READS/pyr_d60_all_1_clean.fq PATH-TO-CLEAN-READS/pyr_d60_all_2_clean.fq --threads num_threads --output PATH-TO-KRAKEN-OUTPUT/pyr_d60_Kraken.out --report Pyr_d60.report --confidence 0.05 </code>
+<code>kraken2 --db PATH-TO-KRAKEN-DATABASE/kraken2_db --paired --classified-out pyr_d60#.fq PATH-TO-CLEAN-READS/pyr_d60_all_1_clean.fq PATH-TO-CLEAN-READS/pyr_d60_all_2_clean.fq --threads num_threads --output PATH-TO-KRAKEN-OUTPUT/pyr_d60_Kraken.out --report Pyr_d60.report --confidence 0.05 </code>
 
 <h3> <center> 4.2 Bracken </center> </h3>
 Now that the initial work is done the estimation can be conducted. Bracken will default to estimate organisms on species level. Set the level (-l) for each iteration (levels: D=domain, P=phylum, C=class, O=order, F=family, G=genus, S=species (default)). The parameter -r sets the readlength (use what was set as minlen in the quality trim). <p>
