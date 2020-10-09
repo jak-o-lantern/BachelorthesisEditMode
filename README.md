@@ -2,7 +2,45 @@
 
 This project describes the workflow utilised in the Bachelorthesis "Metagenomic Analysis Of Representatives Of The Sva1033 Cluster; Potential Iron- And Sulfate Reducers". The analysed metagenomes were Pyr_d60, Cell_F9 and SF_I_II.
 
-For this documentation the Pyr_d60 samples are used as examples for easier understanding of the command lines. Some programs require different version of Python. It is necessary to install these in different environments for them to function properly. Therefore sometimes switching between environments is required. This can be done with <code> conda deactivate environment_name1 </code> and <code> conda activate environment_name2 </code>. Switching environments will not be listed here, only the commands used for the programs.
+For this documentation the Pyr_d60 samples are used as examples for easier understanding of the command lines. 
+
+<h3> <center> Preparations </center> </h3>
+In order to use the metagenomic pipeline as described below, the installation of different programs is necessary when using the conda method and when not working in a pre set-up environment. Therefore, different environments running with different versions of Python are required. This project uses one main environment with Python Version 3.8 that contains most programs. Furthermore four different environments were created using Python Versions 2.7.15, 2.7.18, 3.6 and 3.7.8. Prokka was installed in a clean environment without other programs. Therefore, switching between environments to use certain programs is necessary. To deactivate an environment <code> conda deactivate </code> is used, to activate a new environment <code> conda activate environment_name </code> is used. Installation was conducted with <code> conda install program_name </code> unless otherwise specified, installing all dependencies if not yet installed.
+
+<h4> Environment 1: "metagenomics" <h/4>
+This is the main environment used for this project running on Python 3.8.5. The installed programs are:
+- FastQC (v0.11.9)
+- BBTools (BBduk, BBMap) (Ver. 38.18)
+- MEGAHIT (v1.2.9)
+- Bowtie2 (Ver. 2.4.1)
+- Samtools (Ver. 1.7)
+- Metabat2 (Ver. 2.15)
+- Maxbin2 (Ver. 2.2.7)
+- GTDBtk (Ver. 1.3.0)
+- CheckM (Ver. 1.1.3)[Installation with pip3, see www.x, unzipped using <code> tar xvzf </code>}
+- SPAdes (Ver. 3.14.1)
+- Barrnap (Ver. 0.9)
+
+<h4> Environment 2: "python2.7" </h4>
+This environment runs on Python Version 2.7.18 and contains the following two programs:
+- Kraken2 (Ver. 2.0.9beta)
+- Bracken (Ver. 2.6.0)
+
+<h4> Environment 3: "anvio" </h4>
+This environment runs on Python 3.6.10 and contains:
+- Anvi'o (Ver. 6.2)
+- CONCOCT (Ver. 1.1.0)
+
+<h4> Environment 4: "metawrap" </h4>
+This environment runs on Python 2.7.15 and contains:
+- metaWRAP (Ver. 1.3.0)
+
+<h4> Environment 5: "prokka" </h4>
+This environment runs on Python 3.7.8 and contains:
+- Prokka  (Ver. 1.14.6)
+
+Databases required for Kraken2 and GTDBtk were not built. The databases used were built and kindly provided by another member of the workgroup.
+
 
 <h3> <center> 1. Quality check with FastQC </center> </h3> 
 Using the Illumina Sequences obtained from environmental samples a quality check with FastQC is to be conducted. This analysis will show where the sequences need to be refined, such as trimming out adapters and potentially contaminated parts (mostly located at the beginning and end of the sequences). <p>
@@ -173,6 +211,11 @@ Moving on, the clean reads were mapped back to the contigs created in the new as
 <h3> <center> 15. Annotating genes with RAST </center> </h3>
 Send the obtained sequence to RAST for annotation. 
 
+<h3> <center> 16. Annotating genes with Prokka </center> </h3>
+Headers need to be simplified before running Prokka. This was conducted with anvi-script-reformat-fasta. <p>
+<code> anvi-script-reformat-fasta PATH/TO/final.contigs.fa -o OUTPUT/PATH/contigs-fixed.fa -l 0 --simplify-names -r OUTPUT/PATH/pyr_defline_report </code> <p>
+<code> prokka --kingdom Bacteria --outdir OUTPUT/PATH/prokka --genus M0040 --locustag GCA_006226895.1 --cpus 4 --rnammer PATH/TO/SIMPLIFIED/FILE/simplify/Pyr_d60_AC4_1_simplified.fa </code> <p>
+Genus and locustag can be obtained from the GTDB for the desired organism.
 
 
 
