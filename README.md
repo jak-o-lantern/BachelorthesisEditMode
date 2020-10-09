@@ -9,7 +9,7 @@ For this documentation the Pyr_d60 samples are used as examples for easier under
 In order to use the metagenomic pipeline as described below, the installation of different programs is necessary when using the conda method and when not working in a pre set-up environment. Therefore, different environments running with different versions of Python are required. This project uses one main environment with Python Version 3.8 that contains most programs. <p>Furthermore four different environments were created using Python Versions 2.7.15, 2.7.18, 3.6 and 3.7.8. Prokka was installed in a clean environment without other programs. Therefore, switching between environments to use certain programs is necessary. <p> To deactivate an environment <code> conda deactivate </code>  is used, to activate a new environment <code> conda activate environment_name </code>  is used. Installation was conducted with <code> conda install program_name </code>  unless otherwise specified, installing all dependencies if not yet installed.
 
 <h4> Environment 1: "metagenomics" </h4>
-This is the main environment used for this project running on Python 3.8.5. The installed programs are:
+This is the main environment used for this project running on Python 3.8.5. The installed programs are: <p>
 - FastQC (v0.11.9) <p>
 - BBTools (BBduk, BBMap) (Ver. 38.18) <p>
 - MEGAHIT (v1.2.9) <p>
@@ -23,21 +23,21 @@ This is the main environment used for this project running on Python 3.8.5. The 
 - Barrnap (Ver. 0.9) <p>
 
 <h4> Environment 2: "python2.7" </h4>
-This environment runs on Python Version 2.7.18 and contains the following two programs:
+This environment runs on Python Version 2.7.18 and contains the following two programs: <p>
 - Kraken2 (Ver. 2.0.9beta) <p>
 - Bracken (Ver. 2.6.0)
 
 <h4> Environment 3: "anvio" </h4>
-This environment runs on Python 3.6.10 and contains:
+This environment runs on Python 3.6.10 and contains: <p>
 - Anvi'o (Ver. 6.2) <p>
 - CONCOCT (Ver. 1.1.0)
 
 <h4> Environment 4: "metawrap" </h4>
-This environment runs on Python 2.7.15 and contains:
+This environment runs on Python 2.7.15 and contains: <p>
 - metaWRAP (Ver. 1.3.0)
 
 <h4> Environment 5: "prokka" </h4>
-This environment runs on Python 3.7.8 and contains:
+This environment runs on Python 3.7.8 and contains: <p>
 - Prokka  (Ver. 1.14.6) <p>
 
 Databases required for Kraken2 and GTDBtk were not built. The databases used were built and kindly provided by another member of the workgroup.
