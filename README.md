@@ -18,9 +18,9 @@ This is the main environment used for this project running on Python 3.8.5. The 
 - Metabat2 (Ver. 2.15) <p>
 - Maxbin2 (Ver. 2.2.7) <p>
 - GTDBtk (Ver. 1.3.0) <p>
-- CheckM (Ver. 1.1.3)[Installation with pip3, see www.x, unzipped using <code> tar xvzf </code>] <p>
+- CheckM (Ver. 1.1.3) [Installation with pip3, see https://github.com/Ecogenomics/CheckM/wiki/Installation#how-to-install-checkm, unzipped using <code> tar xvzf </code>] <p>
 - SPAdes (Ver. 3.14.1) <p>
-- Barrnap (Ver. 0.9) <p>
+- Barrnap (Ver. 0.9) 
 
 <h4> Environment 2: "python2.7" </h4>
 This environment runs on Python Version 2.7.18 and contains the following two programs: <p>
@@ -42,7 +42,7 @@ This environment runs on Python 3.7.8 and contains: <p>
 
 Databases required for Kraken2 and GTDBtk were not built. The databases used were built and kindly provided by another member of the workgroup.
 
-
+<h3> <center> 
 <h3> <center> 1. Quality check with FastQC </center> </h3> 
 Using the Illumina Sequences obtained from environmental samples a quality check with FastQC is to be conducted. This analysis will show where the sequences need to be refined, such as trimming out adapters and potentially contaminated parts (mostly located at the beginning and end of the sequences). <p>
 
