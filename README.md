@@ -6,7 +6,7 @@ For this documentation the Pyr_d60 samples are used as examples for easier under
 
 <h3> <center> Preparations </center> </h3>
 
-In order to use the metagenomic pipeline as described below, the installation of different programs is necessary when using the conda method and when not working in a pre set-up environment. Therefore, different environments running with different versions of Python are required. This project uses one main environment with Python Version 3.8 that contains most programs. <p>Furthermore four different environments were created using Python Versions 2.7.15, 2.7.18, 3.6 and 3.7.8. Prokka was installed in a clean environment without other programs. Therefore, switching between environments to use certain programs is necessary. <p> To deactivate an environment <code> conda deactivate </code>is used, to activate a new environment <code> conda activate environment_name </code>is used. Installation was conducted with <code> conda install program_name </code>unless otherwise specified, installing all dependencies if not yet installed.
+In order to use the metagenomic pipeline as described below, the installation of different programs is necessary when using the conda method and when not working in a pre set-up environment. Therefore, different environments running with different versions of Python are required. This project uses one main environment with Python Version 3.8 that contains most programs. <p>Furthermore four different environments were created using Python Versions 2.7.15, 2.7.18, 3.6 and 3.7.8. Prokka was installed in a clean environment without other programs. Therefore, switching between environments to use certain programs is necessary. <p> To deactivate an environment <code>conda deactivate</code> is used, to activate a new environment <code>conda activate environment_name</code> is used. Installation was conducted with <code>conda install program_name</code> unless otherwise specified, installing all dependencies if not yet installed.
 
 <h4> Environment 1: "metagenomics" </h4>
 This is the main environment used for this project running on Python 3.8.5. The installed programs are: <p>
@@ -49,18 +49,19 @@ Databases required for Kraken2 and GTDBtk were not built. The databases used wer
 
 <h3> <center> 
 <h3> <center> 1. Quality check with FastQC </center> </h3> 
-Using the Illumina Sequences obtained from environmental samples a quality check with FastQC is to be conducted. This analysis will show where the sequences need to be refined, such as trimming out adapters and potentially contaminated parts (mostly located at the beginning and end of the sequences). <p>
+Using the Illumina Sequences obtained from environmental samples a quality check with FastQC is to be conducted. This analysis shows where the sequences need to be refined, such as trimming out adapters and potentially contaminated parts (mostly located at the beginning and end of the sequences). <p>
 
 <code>fastqc -o OUTPUT_PATH -f fastq PATH/TO/RAW/READS/pyr_d60_all_1.fq PATH/TO/RAW/READS/pyr_d60_all_2.fq -t num_threads</code>
 
+-f sets the file format.
+
 <h3> <center> 2. Trimming with BBDuk </center> </h3> 
-After analysing the reads with FastQC, it was determined where trimming is necessary. Trimming is performed in 3 steps: Adapter trimming left, adapter trimming right and quality trimming. Always update the input file with the most recent file (i.e. using the right-trimmed file to perform the adapter trim on the left side of the sequence and then the rl-trimmed file to perform the quality trim on).
+After analysing the reads with FastQC, it was determined where trimming was necessary. Trimming is performed in 3 steps: Adapter trimming left, adapter trimming right and quality trimming. Always update the input file with the most recent file (i.e. using the right-trimmed file to perform the adapter trim on the left side of the sequence and then the rl-trimmed file to perform the quality trim on).
 
 <h4> <center> 2.1 Right trim: </center> </h4>
-in sets the input reads, out the outputfiles. ktrim defines which side the file is trimmed on (r,l), k defines that all kmers of size x (here 23) are used, mink sets the minimum kmer size (meaning that it will look for all kmers between k and mink), hdist sets the hamming distance, tpe Trims Pairs Evenly and tbo Trims By Overlap. <p>
-
 <code>bbduk.sh t=num_threads in1=PATH/TO/RAW/READS/pyr_d60_all_1.fq in2=PATH/TO/RAW/READS/pyr_d60_all_2.fq out1=OUTPUT/PATH/pyr_d60_all_1_rtrim.fq out2=OUTPUT/PATH/pyr_d60_all_2_rtrim.fq ref=PATH/TO/ADAPTER/FILE/adapters.fa ktrim=r k=23 mink=11 hdist=1 tpe tbo </code>
 
+in(1,2) sets the input reads, out(1,2) the output files. ktrim defines which side the file is trimmed on (r,l), k defines that all kmers of size x (here 23) are used, mink sets the minimum kmer size (meaning that it will look for all kmers between k and mink), hdist sets the hamming distance, tpe Trims Pairs Evenly and tbo Trims By Overlap. <p>
 <h4> <center> 2.2 Left trim: </center> </h4>
 
 <code>bbduk.sh t=num_threads in1=PATH/TO/RIGHT/TRIMMED/FILE/pyr_d60_all_1_rtrim.fq in2=PATH/TO/RIGHT/TRIMMED/FILE/pyr_d60_all_2_rtrim.fq out1=OUTPUT/PATH/pyr_d60_all_1_rltrimmed.fq out2=OUTPUT/PATH/pyr_d60_all_2_rltrimmed.fq ref=PATH/TO/ADAPTER/FILE/adapters.fa ktrim=l k=23 mink=11 hdist=1 tpe tbo</code>  
@@ -80,8 +81,10 @@ Kraken2 is the base for Bracken to run on. <p>
 
 <code>kraken2 --db PATH/TO/KRAKEN/DATABASE/kraken2_db --paired --classified-out pyr_d60#.fq PATH/TO/CLEAN/READS/pyr_d60_all_1_clean.fq PATH/TO/CLEAN/READS/pyr_d60_all_2_clean.fq --threads num_threads --output PATH/TO/KRAKEN/OUTPUT/pyr_d60_Kraken.out --report Pyr_d60.report --confidence 0.05</code>
 
+Setting the flag --paired will process the reads as paired end reads. --classified-out sets a prefix for the outputs. 
+
 <h4> <center> 4.2 Bracken </center> </h4>
-Bracken now uses the the report Kraken created to estimate organism abundances. Set the level (-l) for each iteration (levels: D=domain, P=phylum, C=class, O=order, F=family, G=genus, S=species (default)). The parameter -r sets the readlength (use what was set as minlen in the quality trim). <p>
+Bracken now uses the the report Kraken created to estimate organism abundances. Set the level (-l) for each iteration (levels: D=domain, P=phylum, C=class, O=order, F=family, G=genus, S=species). The parameter -r sets the readlength (was set accordingly to minlen in the quality trim). <p>
 
 <code>bracken -d PATH/TO/KRAKEN/DATABASE/kraken2_db -i PATH/TO/KRAKEN/REPORT/FILE/Pyr_d60_.report -o PATH/TO/BRACKEN/OUTPUT/Pyr_d60.bracken -r 100 -l D -t num_threads</code> <p>
 <code>bracken -d PATH/TO/KRAKEN/DATABASE/kraken2_db -i PATH/TO/KRAKEN/REPORT/FILE/Pyr_d60_.report -o PATH/TO/BRACKEN/OUTPUT/Pyr_d60.bracken -r 100 -l P -t num_threads</code> <p>
@@ -106,7 +109,7 @@ After having assembled the reads, Bowtie2 was used to map the assembly back to t
 <h3> <center> 7. Sequence Alignment Map (SAM) conversion to Binary Alignment Map (BAM) </center> </h3>
 Various further needed programs require sorted and indexed bam files to work. Sorting and indexing can be done using only samtools (samtools view, samtools sort and samtools index) or using a combination of samtools and Anvi'o. Here, the combination method is used.
 
-<h4> <center> 7.1 Creating the "raw" (not sorted or indexed) .bam file. </center> </h4>
+<h4> <center> 7.1 Creating the "raw" (not sorted or indexed) BAM file. </center> </h4>
 
 <code>samtools view --threads num_threads -F 4 -bS PATH/TO/MAPPED/FILE/pyr_d60_all_reform_mapped.sam > OUTPUT/PATH/pyr_d60_all_reform_mapped_RAW.bam</code>
 
@@ -118,7 +121,7 @@ Various further needed programs require sorted and indexed bam files to work. So
 This step will sort the assembled contigs into bins. This means it will group contigs together, attempting to achieve the highest completion and lowest contamination per bin. <b> EDIT ME PLS </b>
 
 <h4> <center> 8.1 Metabat2 </center> </h4>
-By running metabat with the bam file as reference the accuracy of binning is improved. (creates a new directory with default naming in the current directory) <p>
+By running metabat with the BAM file as reference the accuracy of binning is improved. (creates a new directory with default naming in the current directory) <p>
 
 <code>runMetaBat.sh PATH/TO/ASSEMBLED/CONTIGS/contigs.fasta PATH/TO/COMPLEMENTING/BAM/FILE/pyr_d60_all_ mapped.bam</code>
 
@@ -129,7 +132,7 @@ By running metabat with the bam file as reference the accuracy of binning is imp
 <h4> <center> 8.3 CONCOCT </center> </h4>
 
 <h5> <center> 8.3.1 Cutting contigs into smaller pieces. </center> </h5>
-The recommended cut length as specified <here> is 10000 bp. If necessary (i.e. in later stages of the bin targeted reassembly) cut length can be reduced as deemed appropriate. <p>
+The recommended cut length as specified https://concoct.readthedocs.io/en/latest/usage.html is 10000 bp. If necessary (i.e. in later stages of the bin targeted reassembly) cut length can be reduced as deemed appropriate. <p>
   
 <code>cut_up_fasta.py PATH/TO/ASSEMBLED/CONTIGS/contigs.fasta -c 10000 -o 0 --merge_last -b OUTPUT/PATH/contigs_10k.bed > OUTPUT/PATH/contigs_10k.fa</code>
 
@@ -152,7 +155,7 @@ The recommended cut length as specified <here> is 10000 bp. If necessary (i.e. i
 <code>extract_fasta_bins.py PATH/TO/ORIGINAL/CONTIGS/contigs.fasta PATH/TO/CONCOCT/OUTPUT/clustering_merged.csv --output_path PATH/TO/CONCOCT/OUTPUT/fasta_bins</code>
 
 <h3> <center> 9. Bin refinement using METAWRAP bin_refinement </center> </h3>
-METAWRAP bin_refinement takes the bins created by Metabat2, Maxbin2 and CONCOCT and bins them, again. It provides a combination of all three binning approaches to create 4 new sets of bins. The combinations are AB, ABC, AC and BC. This optimises the binning. For all samples, a consistent input was used. (A=Metabat2, B=Maxbin2, C=CONCOCT). -c set a threshold for completeness and -x a threshold for contamination. -o creates a new directory to be used as output for the refinement using the specified name. <p>
+MetaWRAP bin_refinement takes the bins created by Metabat2, Maxbin2 and CONCOCT and bins them, again. It provides a combination of all three binning approaches to create 4 new sets of bins. The combinations are AB, ABC, AC and BC. This optimises the binning. For all samples, a consistent input was used. (A=Metabat2, B=Maxbin2, C=CONCOCT). -c set a threshold for completeness and -x a threshold for contamination. -o creates a new directory to be used as output for the refinement using the specified name. <p>
 
 <code>metawrap bin_refinement -o PATH/TO/METAWRAP/OUTPUT/Bin_Refinement -t num_threads -A PATH/TO/METABAT2/BINS/fasta_bins/ -B PATH/TO/MAXBIN2/BINS/fasta_bins/ -C PATH/TO/CONCOCT-BINS/fasta_bins/ -c 90 -x 5</code>
 
@@ -207,12 +210,12 @@ Changes the .bam format to fasta/fastq format. <p>
 <code>cat READ_98.fastq | grep '^@.*/2$' -A 3 --no-group-separator > READ_98_2.fastq</code>
 
 <h3> <center>  14. Reassembly with SPAdes </center> </h3> 
-Utilising metagenome and paired end flags --meta --pe <p>
+Utilising metagenome (--meta) and paired end (--pe) flags.<p>
 
 <code>spades.py -o OUTPUT-PATH/reassembly --pe1-1 PATH-TO-READ-1/READ_98_1.fastq --pe1-2 PATH-TO-READ-2/READ_98_2.fastq --meta -t num_threads</code> <br>
 Moving on, the clean reads were mapped back to the contigs created in the new assembly. Repeat steps 12.1 through 12.4. <p>
 
-<font size=5> Steps 11 and 13 are repeated until the N50 scaffold value does no longer increase. </font>
+<font size=5> Steps 11 and 13 were repeated until the N50 scaffold value no longer increased. </font>
 
 <h3> <center> 15. Annotating genes with RAST </center> </h3>
 Send the obtained sequence to RAST for annotation. 
