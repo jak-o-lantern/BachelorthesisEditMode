@@ -25,20 +25,24 @@ This is the main environment used for this project running on Python 3.8.5. The 
 
 <h4> Environment 2: "python2.7" </h4>
 This environment runs on Python Version 2.7.18 and contains the following two programs: <p>
+  
 - Kraken2 (Ver. 2.0.9beta) <p>
 - Bracken (Ver. 2.6.0)
 
 <h4> Environment 3: "anvio" </h4>
 This environment runs on Python 3.6.10 and contains: <p>
+  
 - Anvi'o (Ver. 6.2) <p>
 - CONCOCT (Ver. 1.1.0)
 
 <h4> Environment 4: "metawrap" </h4>
 This environment runs on Python 2.7.15 and contains: <p>
+  
 - metaWRAP (Ver. 1.3.0)
 
 <h4> Environment 5: "prokka" </h4>
 This environment runs on Python 3.7.8 and contains: <p>
+  
 - Prokka  (Ver. 1.14.6) <p>
 
 Databases required for Kraken2 and GTDBtk were not built. The databases used were built and kindly provided by another member of the workgroup.
