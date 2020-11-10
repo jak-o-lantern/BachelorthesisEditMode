@@ -47,7 +47,12 @@ This environment runs on Python 3.7.8 and contains: <p>
 
 Databases required for Kraken2 and GTDBtk were not built. The databases used were built and kindly provided by another member of the workgroup.
 
-<h3> <center> 
+<h4> Environment 6: "fegenie" </h4>
+This environment runs on Python 3.7.8 and contains: <p>
+  
+- FeGenie (Ver. ) <p>
+
+
 <h3> <center> 1. Quality check with FastQC </center> </h3> 
 Using the Illumina Sequences obtained from environmental samples a quality check with FastQC is to be conducted. This analysis shows where the sequences need to be refined, such as trimming out adapters and potentially contaminated parts (mostly located at the beginning and end of the sequences). <p>
 
@@ -225,6 +230,10 @@ Headers need to be simplified before running Prokka. This was conducted with anv
 <code>anvi-script-reformat-fasta PATH/TO/final.contigs.fa -o OUTPUT/PATH/contigs-fixed.fa -l 0 --simplify-names -r OUTPUT/PATH/pyr_defline_report</code> <p>
 <code>prokka --kingdom Bacteria --outdir OUTPUT/PATH/prokka --genus M0040 --locustag GCA_006226895.1 --cpus 4 --rnammer PATH/TO/SIMPLIFIED/FILE/simplify/Pyr_d60_AC4_1_simplified.fa</code> <p>
 Genus and locustag can be obtained from the GTDB for the desired organism.
+  
+<h3> <center> 17. Annotating genes with FeGenie </center> </h3>
+Because of the special interest in iron affiliated genes, FeGenie was used in addition to Prokka and RAST to annotate genes in all samples.
+FeGenie.py -bin_dir PATH/TO/BIN/DIRECTORY/ -bin_ext fa -out OUTPUT/PATH/fegenie_output
 
 
 
