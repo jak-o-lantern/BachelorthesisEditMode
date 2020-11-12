@@ -1,12 +1,12 @@
 # A metagenomic workflow.
 
-This project describes the workflow utilised in the Bachelorthesis "Metagenomic Analysis Of Representatives Of The Sva1033 Cluster; Potential Iron- And Sulfate Reducers". The analysed metagenomes were Pyr_d60, Cell_F9 and SF_I_II.
+This project describes the workflow utilised in the Bachelorthesis "Metagenomic Analysis Of Representatives Of The Sva1033 Cluster; Potential Iron- And Sulfate Reducers". The analysed metagenomes were Pyr_d60, Cell_F9 and SF_4.
 
 For this documentation the Pyr_d60 samples are used as examples for easier understanding of the command lines. 
 
 <h3> <center> Preparations </center> </h3>
 
-In order to use the metagenomic pipeline as described below, the installation of different programs is necessary when using the conda method and when not working in a pre set-up environment. Therefore, different environments running with different versions of Python are required. This project uses one main environment with Python Version 3.8 that contains most programs. <p>Furthermore four different environments were created using Python Versions 2.7.15, 2.7.18, 3.6 and 3.7.8. Prokka was installed in a clean environment without other programs. Therefore, switching between environments to use certain programs is necessary. <p> To deactivate an environment <code>conda deactivate</code> is used, to activate a new environment <code>conda activate environment_name</code> is used. Installation was conducted with <code>conda install program_name</code> unless otherwise specified, installing all dependencies if not yet installed.
+In order to use the metagenomic pipeline as described below, the installation of different programs is necessary when using the conda method and when not working in a pre set-up environment. Therefore, different environments running with different versions of Python are required. This project uses one main environment with Python Version 3.8 that contains most programs. <p>Furthermore five different environments were created using Python Versions 2.7.15, 2.7.18, 3.6 and 3.7.8. Prokka and FeGenie were installed in a clean environment each without other programs. Therefore, switching between environments to use certain programs is necessary. <p> To deactivate an environment <code>conda deactivate</code> is used, to activate a new environment <code>conda activate environment_name</code> is used. Installation was conducted with <code>conda install program_name</code> unless otherwise specified, installing all dependencies if not yet installed.
 
 <h4> Environment 1: "metagenomics" </h4>
 This is the main environment used for this project running on Python 3.8.5. The installed programs are: <p>
@@ -220,7 +220,7 @@ Utilising metagenome (--meta) and paired end (--pe) flags.<p>
 <code>spades.py -o OUTPUT-PATH/reassembly --pe1-1 PATH-TO-READ-1/READ_98_1.fastq --pe1-2 PATH-TO-READ-2/READ_98_2.fastq --meta -t num_threads</code> <br>
 Moving on, the clean reads were mapped back to the contigs created in the new assembly. Repeat steps 12.1 through 12.4. <p>
 
-<font size=5> Steps 11 and 13 were repeated until the N50 scaffold value no longer increased. </font>
+<font size=5> Steps 11, 13 and 14 were repeated until the N50 scaffold value no longer increased. </font>
 
 <h3> <center> 15. Annotating genes with RAST </center> </h3>
 Send the obtained sequence to RAST for annotation. 
