@@ -1,6 +1,6 @@
 # Workflow for the Sva1033 metagenomic analysis.
 
-This project describes the workflow utilised in the Bachelorthesis "Metagenomic Analysis Of Representatives Of The Sva1033 Cluster; Potential Iron- And Sulfate Reducers". The analysed metagenomes were Pyr_d60, Cell_F9 and SF_4.
+This project describes the workflow utilised in the bachelor thesis "Metagenomic Analysis Of Representatives Of The Sva1033 Cluster; Potential Iron- And Sulfate Reducers". The analysed metagenomes were Pyr_d60, Cell_F9 and SF_4.
 
 For this documentation the Pyr_d60 samples are used as examples for easier understanding of the command lines. 
 
