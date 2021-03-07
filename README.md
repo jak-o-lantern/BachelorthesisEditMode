@@ -89,7 +89,7 @@ Kraken2 is the base for Bracken to run on. <p>
 Setting the flag --paired will process the reads as paired end reads. --classified-out sets a prefix for the outputs. 
 
 <h4> <center> 4.2 Bracken </center> </h4>
-Bracken now uses the the report Kraken created to estimate organism abundances. Set the level (-l) for each iteration (levels: D=domain, P=phylum, C=class, O=order, F=family, G=genus, S=species). The parameter -r sets the readlength (was set accordingly to minlen in the quality trim). <p>
+Bracken now uses the report Kraken created to estimate organism abundances. Set the level (-l) for each iteration (levels: D=domain, P=phylum, C=class, O=order, F=family, G=genus, S=species). The parameter -r sets the readlength (was set accordingly to minlen in the quality trim). <p>
 
 <code>bracken -d PATH/TO/KRAKEN/DATABASE/kraken2_db -i PATH/TO/KRAKEN/REPORT/FILE/Pyr_d60_.report -o PATH/TO/BRACKEN/OUTPUT/Pyr_d60.bracken -r 100 -l D -t num_threads</code> <p>
 <code>bracken -d PATH/TO/KRAKEN/DATABASE/kraken2_db -i PATH/TO/KRAKEN/REPORT/FILE/Pyr_d60_.report -o PATH/TO/BRACKEN/OUTPUT/Pyr_d60.bracken -r 100 -l P -t num_threads</code> <p>
